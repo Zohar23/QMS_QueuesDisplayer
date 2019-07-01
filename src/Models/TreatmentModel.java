@@ -1,5 +1,8 @@
 package Models;
-public class TreatmentModel {
+
+import java.io.Serializable;
+
+public class TreatmentModel implements Serializable {
 
     private int NumberPatient = 0;
     private int NumberServiceProvider = 0;
@@ -21,5 +24,11 @@ public class TreatmentModel {
     public void setNumberServiceProvider(int numberPharmacist) {
 
         NumberServiceProvider = numberPharmacist;
+    }
+
+    public String toString()
+    {
+        return NumberPatient+" "+ NumberServiceProvider;
+
     }
 }

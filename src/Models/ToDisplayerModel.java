@@ -1,27 +1,28 @@
 package Models;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-public class ToDisplayerModel {
+public class ToDisplayerModel implements Serializable {
 
-   private List<TreatmentModel> pharmList;
-   private List<TreatmentModel> nurseList;
+   private ArrayList<TreatmentModel> pharmList;
+   private ArrayList<TreatmentModel> nurseList;
    private TreatmentModel nextTreatment;
-   private String pharmOrNurse;
+    private String pharmOrNurseOrNew;
 
-    public List<TreatmentModel> getPharmList() {
+    public ArrayList<TreatmentModel> getPharmList() {
         return pharmList;
     }
 
-    public void setPharmList(List<TreatmentModel> pharmList) {
+    public void setPharmList(ArrayList<TreatmentModel> pharmList) {
         this.pharmList = pharmList;
     }
 
-    public List<TreatmentModel> getNurseList() {
+    public ArrayList<TreatmentModel> getNurseList() {
         return nurseList;
     }
 
-    public void setNurseList(List<TreatmentModel> nurseList) {
+    public void setNurseList(ArrayList<TreatmentModel> nurseList) {
         this.nurseList = nurseList;
     }
 
@@ -34,10 +35,10 @@ public class ToDisplayerModel {
     }
 
     public String getPharmOrNurse() {
-        return pharmOrNurse;
+        return pharmOrNurseOrNew;
     }
 
     public void setPharmOrNurse(String pharmOrNurse) {
-        this.pharmOrNurse = pharmOrNurse;
+        this.pharmOrNurseOrNew = pharmOrNurse;
     }
 }

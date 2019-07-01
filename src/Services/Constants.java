@@ -15,6 +15,9 @@ public class Constants {
     public final static String REPORT = "REPORT";
     public final static String NURSE_NEXT_PATIENT = "NURSE_NEXT_PATIENT";
     public final static String PHARM_NEXT_PATIENT = "PHARM_NEXT_PATIENT";
+    public final static String NEWDISPLAYER = "NEWDISPLAYER";
+    public final static String UPDATEDISPLAYER = "UPDATEDISPLAYER";
+
 
     /*Protocol After Headers*/
     public final static String PATIENT_NUMBER = "PATIENT_NUMBER";

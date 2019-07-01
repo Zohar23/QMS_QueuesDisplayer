@@ -1,12 +1,16 @@
 package Services.Communication;
 
 
+import Controller.DisplayController;
+import Models.ToDisplayerModel;
+import Models.TreatmentModel;
 import Services.Constants;
 import javafx.application.Platform;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.List;
 
 public class OutgoingCommunication extends Thread{
@@ -14,6 +18,9 @@ public class OutgoingCommunication extends Thread{
     String serverIP = "";
     String message;
     int serverPort;
+
+    ObjectOutputStream toServer;
+    ObjectInputStream fromServer;
 
     public OutgoingCommunication(String serverIP, int serverPort, String message){
         this.serverIP = serverIP;
@@ -24,43 +31,72 @@ public class OutgoingCommunication extends Thread{
     @Override
     public void run() {
         Socket client = null;
-        PrintWriter pwOut =  null;
-        BufferedReader brIn = null;
+
         String incomingCommand;
         try {
             // now open a conversation with the server
             InetAddress neighborAddress = InetAddress.getByName(serverIP);
             // build a socket and it connects automatically
             client = new Socket(neighborAddress, serverPort);
-            // send the message
-            pwOut = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
-            InputStream inputStream = client.getInputStream();
-            pwOut.write(message + "\n");
-            pwOut.flush();
-
+            // Create an output stream to the server
+            toServer = new ObjectOutputStream(client.getOutputStream());
+            fromServer = new ObjectInputStream(client.getInputStream());
+            toServer.writeUTF(this.message);
+            toServer.flush();
 
             /*get response from server*/
-            /*[servic type][patient number]*/
-            // create a DataInputStream so we can read data from it.
-
-            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 
             // read the list of messages from the socket
             while (!this.isInterrupted()){
-                List<String> listOfMessages = (List<String>) objectInputStream.readObject();
 
+                //From Server//
+                //Check the header
+                incomingCommand = fromServer.readUTF();
+                ToDisplayerModel toDisplayer = (ToDisplayerModel) fromServer.readObject();
+                TreatmentModel treatment = toDisplayer.getNextTreatment();
 
+                if(incomingCommand.equals(Constants.UPDATEDISPLAYER))
+                {
+                    Platform.runLater(() -> DisplayController.updateNextTreatmentlbl(
+                            treatment.getNumberPatient(),
+                            treatment.getNumberServiceProvider(),
+                            toDisplayer.getPharmOrNurse()
+                            ));
+
+                    //TODO: update lists
+                    Platform.runLater(() ->DisplayController.updateQueues(
+                            toDisplayer.getPharmList(),
+                            toDisplayer.getNurseList()
+                            ));
+                }
+                else if(incomingCommand.equals(Constants.NEWDISPLAYER))
+                {
+                    //TODO: update lists
+                    Platform.runLater(() ->DisplayController.updateQueues(
+                            toDisplayer.getPharmList(),
+                            toDisplayer.getNurseList()
+                    ));
+                }
             }
 
         } catch (IOException e){
-            //e.printStackTrace();
+
+            String exceptionClassName = e.getClass().getName();
+            if(exceptionClassName.equals(SocketException.class.getName()) || exceptionClassName.equals(EOFException.class.getName()) )
+              System.out.println("Connection with the server is closed");
+            else
+                e.printStackTrace();
+
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+
         try {
             if(client != null) {
                 client.close();
-                pwOut.close();
+                toServer.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
