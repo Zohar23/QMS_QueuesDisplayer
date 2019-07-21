@@ -12,18 +12,18 @@ public class TreatmentModel implements Serializable {
         return NumberPatient;
     }
 
-    public void setNumberPatient(int numberPatient) {
-
+    public int setNumberPatient(int numberPatient) {
         NumberPatient = numberPatient;
+        return numberPatient;
     }
 
     public int getNumberServiceProvider() {
         return NumberServiceProvider;
     }
 
-    public void setNumberServiceProvider(int numberPharmacist) {
-
+    public int setNumberServiceProvider(int numberPharmacist) {
         NumberServiceProvider = numberPharmacist;
+        return numberPharmacist;
     }
 
     public String toString()
